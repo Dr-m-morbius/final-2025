@@ -9,13 +9,17 @@ public class playermove : MonoBehaviour
     public float moveSpeed = 1f;
     public Transform theCamera;
     public Transform groundCheckpoint;
+    public bool candash = true;
          
              public float jumpForce = 10f;
          public float gravityModifier = 1f;
          public Transform firePoint;
+         public float dashTime = 1f;
+
 public GameObject bullet;
        private Vector3 _moveInput;
        public float JumpForce = 15f;
+        public float dashForce = 15f;
        private Rigidbody _playerRb;
        public LayerMask WhatIsGround;
     private CapsuleCollider playercollide;
@@ -62,6 +66,7 @@ float yVelocity = _moveInput.y;
                //Apply Jumping
                
         _moveInput.y = yVelocity;
+        _moveInput.x += Physics.gravity.y * gravityModifier * Time.deltaTime;
 
         _moveInput.y += Physics.gravity.y * gravityModifier * Time.deltaTime;
 
@@ -79,6 +84,24 @@ float yVelocity = _moveInput.y;
         {
             _moveInput.y = jumpForce;
         }
+       
+        if(Input.GetKeyDown(KeyCode.LeftShift)&& candash)
+        {
+            _moveInput.x = dashForce;
+            dashTime = 1;
+            dashTime -= Time.deltaTime;
+            candash = false;
+        }
         _characterController.Move(_moveInput * Time.deltaTime);
+        if(dashTime <= 0)
+        {
+            candash = true;
+        }
+         if(dashTime >= 0)
+        {
+            dashTime -= Time.deltaTime;
+        
+        }
+          
     }
 }

@@ -264,15 +264,18 @@ MonoBehaviour:
   moveSpeed: 5
   theCamera: {fileID: 963194228}
   groundCheckpoint: {fileID: 1335635775}
+  candash: 1
   jumpForce: 10
   gravityModifier: 5
   firePoint: {fileID: 1528354106}
+  dashTime: 1
   bullet: {fileID: 1451333730622067250, guid: c2d0812b1321b4d4499d9266e3e0598e, type: 3}
   JumpForce: 15
+  dashForce: 1000
   WhatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  mouseSensitivity: 4
+  mouseSensitivity: 7
   _isOnGround: 0
 --- !u!136 &473565553
 CapsuleCollider:
