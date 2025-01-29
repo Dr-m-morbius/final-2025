@@ -26,6 +26,8 @@ public GameObject bullet;
          public float mouseSensitivity = 1f;
        private CharacterController _characterController;
         [SerializeField] private bool _isOnGround;
+        private ammo _ammo;
+
             private bool _canPlayerJump;
     // Start is called before the first frame update
     void Start()
@@ -34,15 +36,19 @@ public GameObject bullet;
          Cursor.lockState = CursorLockMode.Locked;
          playercollide = GetComponent<CapsuleCollider>();
         _playerRb = GetComponent<Rigidbody>();
+        _ammo = GetComponent<ammo>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
             //shooting 
-            if(Input.GetMouseButtonDown(1))
+            if(Input.GetMouseButtonDown(1) && _ammo.GetAmmoAmount() > 0)
             {
                  Instantiate(bullet, firePoint.position, firePoint.rotation);
+                  _ammo.RemoveAmmo();
+
             }
 
         
