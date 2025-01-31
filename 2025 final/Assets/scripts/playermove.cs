@@ -7,13 +7,17 @@ using UnityEngine;
 public class playermove : MonoBehaviour
 {
     public float moveSpeed = 1f;
+    public bool running = false;
+    public float runSpeed =2f;
     public Transform theCamera;
     public Transform groundCheckpoint;
     public bool candash = true;
+    public GameObject player;
          
              public float jumpForce = 10f;
          public float gravityModifier = 1f;
-         public Transform firePoint;
+         
+         public Transform firepoint;
          public float dashTime = 1f;
 
 public GameObject bullet;
@@ -27,6 +31,7 @@ public GameObject bullet;
        private CharacterController _characterController;
         [SerializeField] private bool _isOnGround;
         private ammo _ammo;
+        private Rigidbody rb;
 
             private bool _canPlayerJump;
     // Start is called before the first frame update
@@ -37,29 +42,56 @@ public GameObject bullet;
          playercollide = GetComponent<CapsuleCollider>();
         _playerRb = GetComponent<Rigidbody>();
         _ammo = GetComponent<ammo>();
+        rb = GetComponent<Rigidbody>();
 
     }
 
     // Update is called once per frame
     void Update()
     {
-            //shooting 
-            if(Input.GetMouseButtonDown(1) && _ammo.GetAmmoAmount() > 0)
-            {
-                 Instantiate(bullet, firePoint.position, firePoint.rotation);
-                  _ammo.RemoveAmmo();
+        if(Input.GetKey(KeyCode.LeftShift))
+        {
+            moveSpeed = 15;
 
-            }
+        }
+        else
+        {
+            moveSpeed = 5;
+        }
+            //shooting 
+            if(Input.GetMouseButtonDown(0) && _ammo.GetAmmoAmount() > 0)
+{
+    //find crosshair
+    RaycastHit hit;
+    if(Physics.Raycast(theCamera.position, theCamera.forward, out hit, 50f))
+    {
+        if(Vector3.Distance(theCamera.position,hit.point) > 2f)
+        {
+            firepoint.LookAt(hit.point);
+        }
+    }
+    else
+    {
+        firepoint.LookAt(theCamera.position + (theCamera.forward * 30f));
+    }
+
+    //bullet born
+    Instantiate(bullet, firepoint.position, firepoint.rotation);
+
+    //kill ammo
+    _ammo.RemoveAmmo();
+}
 
         
                 //Player jump setup
-float yVelocity = _moveInput.y;
+    float yVelocity = _moveInput.y;
         //playermovement
           Vector3 forwardDirection = transform.forward * Input.GetAxis("Vertical");
         Vector3 horizontalDirection = transform.right * Input.GetAxis("Horizontal");
 
         _moveInput = (forwardDirection + horizontalDirection).normalized;
-        _moveInput *= moveSpeed;
+       _moveInput *= moveSpeed;
+        
         
 
         //camrea 
@@ -93,7 +125,7 @@ float yVelocity = _moveInput.y;
        
         if(Input.GetKeyDown(KeyCode.LeftShift)&& candash)
         {
-            _moveInput.x = dashForce;
+        
             dashTime = 1;
             dashTime -= Time.deltaTime;
             candash = false;
