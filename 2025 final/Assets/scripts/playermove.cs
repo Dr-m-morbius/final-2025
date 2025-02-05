@@ -1,16 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEngine;
+
 
 
 public class playermove : MonoBehaviour
 {
     public float moveSpeed = 1f;
+    
+    public bool freeze;
     public bool running = false;
     public float runSpeed =2f;
     public Transform theCamera;
-    public Transform groundCheckpoint;
+        public Transform groundCheckpoint;
     public bool candash = true;
     public GameObject player;
          
@@ -59,7 +63,7 @@ public GameObject bullet;
             moveSpeed = 5;
         }
             //shooting 
-            if(Input.GetMouseButtonDown(0) && _ammo.GetAmmoAmount() > 0)
+    if(Input.GetMouseButtonDown(0) && _ammo.GetAmmoAmount() > 0)
 {
     //find crosshair
     RaycastHit hit;
@@ -142,4 +146,5 @@ public GameObject bullet;
         }
           
     }
+   
 }
