@@ -1,150 +1,140 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 
 public class playermove : MonoBehaviour
-{
-    public float moveSpeed = 1f;
-    
-    public bool freeze;
-    public bool running = false;
-    public float runSpeed =2f;
-    public Transform theCamera;
-        public Transform groundCheckpoint;
-    public bool candash = true;
-    public GameObject player;
-         
-             public float jumpForce = 10f;
-         public float gravityModifier = 1f;
-         
-         public Transform firepoint;
-         public float dashTime = 1f;
+{     
+    float horizontalinput;
+    float verticalinput;
+     public float Gravity = 1f;
+    public float groundDrag;
+    public float jumpforce = 5;
+    public Movementstate state;
 
-public GameObject bullet;
+    public enum Movementstate
+    {
+        walkking,
+        running,
+        inair
+    }
+    public float jumpcooldown = 5f;
+public float airmultiplier;
+public bool canjump = true;
+    public float playerheight;
+    public LayerMask whatisground;
+    public bool grounded;
+
+    Vector3 movedirection;
+    private float moveSpeed = 10f;
+    public float walkspeed;
+    public float runspeed;
+    public KeyCode sprintkey = KeyCode.LeftShift;
        private Vector3 _moveInput;
-       public float JumpForce = 15f;
-        public float dashForce = 15f;
-       private Rigidbody _playerRb;
-       public LayerMask WhatIsGround;
-    private CapsuleCollider playercollide;
-         public float mouseSensitivity = 1f;
-       private CharacterController _characterController;
-        [SerializeField] private bool _isOnGround;
-        private ammo _ammo;
-        private Rigidbody rb;
+       private KeyCode jumpkey = KeyCode.Space;
+       public Transform orentation;
+       private Rigidbody rb;
 
-            private bool _canPlayerJump;
     // Start is called before the first frame update
     void Start()
     {
-         _characterController = GetComponent<CharacterController>();
-         Cursor.lockState = CursorLockMode.Locked;
-         playercollide = GetComponent<CapsuleCollider>();
-        _playerRb = GetComponent<Rigidbody>();
-        _ammo = GetComponent<ammo>();
+         Physics.gravity *= Gravity;
+         canjump = true;
+
         rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
 
     }
-
-    // Update is called once per frame
-    void Update()
+        void Update()
     {
-        if(Input.GetKey(KeyCode.LeftShift))
-        {
-            moveSpeed = 15;
+        input(); 
+        statehandler();
 
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 0.2f, whatisground);
+
+        //drag stuffs 
+        if(grounded)
+        {
+            rb.drag = groundDrag;
         }
-        else
+        else 
         {
-            moveSpeed = 5;
-        }
-            //shooting 
-    if(Input.GetMouseButtonDown(0) && _ammo.GetAmmoAmount() > 0)
-{
-    //find crosshair
-    RaycastHit hit;
-    if(Physics.Raycast(theCamera.position, theCamera.forward, out hit, 50f))
-    {
-        if(Vector3.Distance(theCamera.position,hit.point) > 2f)
-        {
-            firepoint.LookAt(hit.point);
-        }
-    }
-    else
-    {
-        firepoint.LookAt(theCamera.position + (theCamera.forward * 30f));
-    }
-
-    //bullet born
-    Instantiate(bullet, firepoint.position, firepoint.rotation);
-
-    //kill ammo
-    _ammo.RemoveAmmo();
-}
-
-        
-                //Player jump setup
-    float yVelocity = _moveInput.y;
-        //playermovement
-          Vector3 forwardDirection = transform.forward * Input.GetAxis("Vertical");
-        Vector3 horizontalDirection = transform.right * Input.GetAxis("Horizontal");
-
-        _moveInput = (forwardDirection + horizontalDirection).normalized;
-       _moveInput *= moveSpeed;
-        
-        
-
-        //camrea 
-         Vector2 mouseInput = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y")) * mouseSensitivity;
-
-        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + mouseInput.x, transform.rotation.eulerAngles.z);
-
-        theCamera.rotation = Quaternion.Euler(theCamera.rotation.eulerAngles + new Vector3(-mouseInput.y, 0f, 0f));
-
-               //Apply Jumping
-               
-        _moveInput.y = yVelocity;
-        _moveInput.x += Physics.gravity.y * gravityModifier * Time.deltaTime;
-
-        _moveInput.y += Physics.gravity.y * gravityModifier * Time.deltaTime;
-
-        //Check if character controller is on the ground
-        if(_characterController.isGrounded)
-        {
-            _moveInput.y = Physics.gravity.y * gravityModifier * Time.deltaTime;
-        }
-
-        //Check if player can jump
-        _canPlayerJump = Physics.OverlapSphere(groundCheckpoint.position, 0.5f, WhatIsGround).Length > 0;
-
-        //Make player jump
-        if(Input.GetKeyDown(KeyCode.Space) && _canPlayerJump)
-        {
-            _moveInput.y = jumpForce;
+            rb.drag = 0;
         }
        
-        if(Input.GetKeyDown(KeyCode.LeftShift)&& candash)
-        {
-        
-            dashTime = 1;
-            dashTime -= Time.deltaTime;
-            candash = false;
-        }
-        _characterController.Move(_moveInput * Time.deltaTime);
-        if(dashTime <= 0)
-        {
-            candash = true;
-        }
-         if(dashTime >= 0)
-        {
-            dashTime -= Time.deltaTime;
-        
-        }
-          
     }
-   
+      private void FixedUpdate()
+    {
+         movement();
+    }
+
+
+    private void input()
+    {
+        horizontalinput = Input.GetAxisRaw("Horizontal");
+        verticalinput = Input.GetAxisRaw("Vertical"); 
+
+        if(Input.GetKey(jumpkey) && canjump && grounded)
+        {
+            canjump = false;
+            jump();
+            Invoke(nameof(resetjump), jumpcooldown);
+        }
+    }
+
+    private void statehandler()
+    {
+        //put in sprint state
+        if(grounded && Input.GetKey(sprintkey))
+        {
+            state = Movementstate.running;
+            moveSpeed = runspeed;
+        }
+        //put in walking state
+        else if(grounded)
+        {
+            state = Movementstate.walkking;
+            moveSpeed = walkspeed;
+        }
+
+        // put in air state
+        else
+        {
+            state = Movementstate.inair;
+        }
+    }
+
+  
+    private void movement()
+    {
+        movedirection = orentation.forward * verticalinput + orentation.right *horizontalinput;
+            //on ground
+            if(grounded)
+            {
+        rb.AddForce(movedirection.normalized * moveSpeed * 10f, ForceMode.Force);
+            }
+        //in air
+        else if(!grounded)
+        {
+            rb.AddForce(movedirection.normalized * moveSpeed * 10f * airmultiplier, ForceMode.Force);
+        }
+    }
+
+    private void jump()
+    {
+     //reset y velocity for always jumping same height
+     rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+     rb.AddForce(transform.up * jumpforce, ForceMode.Impulse);
+    }
+   private void resetjump()
+   {
+    canjump = true;
+   }
 }
