@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Sprites;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
 
 public class grapple : MonoBehaviour
@@ -16,7 +17,11 @@ public class grapple : MonoBehaviour
     public float maxdistance;
     public float delay;
     private Vector3 grapplepoint;
+    private AudioSource source;
+
     private bool grappling;
+    public AudioClip shoot;
+    public AudioClip hitwall;
 
     public float cooldown;
     private float timer;
@@ -25,7 +30,7 @@ public class grapple : MonoBehaviour
     void Start()
     {
         pm = GetComponent<playermove>();
-
+    source = GetComponent<AudioSource>(); 
     }
 
     // Update is called once per frame
@@ -67,6 +72,8 @@ public class grapple : MonoBehaviour
             joint.damper = 7f;
             joint.massScale = 4.5f;
           lr.positionCount = 2;
+          source.PlayOneShot(shoot);
+          source.PlayOneShot(hitwall);
           //grappleposition = grappletip.position;
             
         }

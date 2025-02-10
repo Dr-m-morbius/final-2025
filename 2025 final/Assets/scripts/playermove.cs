@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using JetBrains.Annotations;
 using TMPro;
 using Unity.VisualScripting;
@@ -11,6 +12,10 @@ using UnityEngine.UIElements;
 
 public class playermove : MonoBehaviour
 {     
+    public float crouchspeed;
+    public float crouchyscale;
+    public float startyscale;
+    public KeyCode crouchkey = KeyCode.LeftControl;
     float horizontalinput;
     float verticalinput;
      public float Gravity = 1f;
@@ -22,7 +27,8 @@ public class playermove : MonoBehaviour
     {
         walkking,
         running,
-        inair
+        inair,
+        crouching
     }
     public float jumpcooldown = 5f;
 public float airmultiplier;
@@ -41,7 +47,11 @@ public bool canjump = true;
        public Transform orentation;
        private Rigidbody rb;
 
+       
+
     // Start is called before the first frame update
+
+    
     void Start()
     {
          Physics.gravity *= Gravity;
@@ -49,8 +59,10 @@ public bool canjump = true;
 
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        startyscale = transform.localScale.y;
 
     }
+
         void Update()
     {
         input(); 
@@ -67,7 +79,7 @@ public bool canjump = true;
         {
             rb.drag = 0;
         }
-       
+       //speedcontrol();
     }
       private void FixedUpdate()
     {
@@ -86,6 +98,19 @@ public bool canjump = true;
             jump();
             Invoke(nameof(resetjump), jumpcooldown);
         }
+
+    //start crouch
+
+    if (Input.GetKeyDown(crouchkey))
+    {
+        transform.localScale = new Vector3(transform.localScale.x, crouchyscale,transform.localScale.z);
+        rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+    }
+    //stop crouch
+    if (Input.GetKeyUp(crouchkey))
+    {
+        transform.localScale = new Vector3(transform.localScale.x, startyscale, transform.localScale.z);
+    }
     }
 
     private void statehandler()
@@ -108,6 +133,12 @@ public bool canjump = true;
         {
             state = Movementstate.inair;
         }
+
+        if (Input.GetKey(crouchkey) && grounded)
+        {
+            state = Movementstate.crouching;
+            moveSpeed = crouchspeed;
+        }
     }
 
   
@@ -123,6 +154,20 @@ public bool canjump = true;
         else if(!grounded)
         {
             rb.AddForce(movedirection.normalized * moveSpeed * 10f * airmultiplier, ForceMode.Force);
+        }
+    }
+
+    private void speedcontrol()
+    {
+        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+
+        //limit velocity
+
+        if(flatVel.magnitude > moveSpeed)
+        {
+            Vector3 LimitedVel  = flatVel.normalized * moveSpeed;
+            rb.velocity = new Vector3(LimitedVel.x, rb.velocity.y, LimitedVel.z);
         }
     }
 
