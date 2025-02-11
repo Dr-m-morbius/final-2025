@@ -15,6 +15,9 @@ public class playermove : MonoBehaviour
     public float crouchspeed;
     public float crouchyscale;
     public float startyscale;
+    private AudioSource source;
+    public AudioClip jumping;
+    public AudioClip groundpound;
     public KeyCode crouchkey = KeyCode.LeftControl;
     float horizontalinput;
     float verticalinput;
@@ -56,7 +59,7 @@ public bool canjump = true;
     {
          Physics.gravity *= Gravity;
          canjump = true;
-
+         source = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         startyscale = transform.localScale.y;
@@ -97,6 +100,7 @@ public bool canjump = true;
             canjump = false;
             jump();
             Invoke(nameof(resetjump), jumpcooldown);
+            source.PlayOneShot(jumping);
         }
 
     //start crouch
@@ -132,6 +136,11 @@ public bool canjump = true;
         else
         {
             state = Movementstate.inair;
+            if (Input.GetKeyDown(crouchkey))
+            {
+                rb.AddForce(Vector3.down * jumpforce, ForceMode.Impulse);
+                source.PlayOneShot(groundpound);
+            }
         }
 
         if (Input.GetKey(crouchkey) && grounded)
@@ -155,6 +164,7 @@ public bool canjump = true;
         {
             rb.AddForce(movedirection.normalized * moveSpeed * 10f * airmultiplier, ForceMode.Force);
         }
+        
     }
 
     private void speedcontrol()
