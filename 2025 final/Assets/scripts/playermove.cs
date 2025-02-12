@@ -5,6 +5,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using JetBrains.Annotations;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -12,6 +13,9 @@ using UnityEngine.UIElements;
 
 public class playermove : MonoBehaviour
 {     
+    public float maxSlope;
+        
+    private RaycastHit slopehit;
     public float crouchspeed;
     public float crouchyscale;
     public float startyscale;
@@ -154,6 +158,12 @@ public bool canjump = true;
     private void movement()
     {
         movedirection = orentation.forward * verticalinput + orentation.right *horizontalinput;
+
+        //on slope
+        if(OnSlope())
+        {
+            rb.AddForce(Slopedirection() * moveSpeed * 10f, ForceMode.Force);
+        }
             //on ground
             if(grounded)
             {
@@ -191,5 +201,20 @@ public bool canjump = true;
    private void resetjump()
    {
     canjump = true;
+   }
+   private bool OnSlope()
+   {
+    if(Physics.Raycast(transform.position, Vector3.down, out slopehit, playerheight * 0.5f + 0.3f))
+    {
+        float angle = Vector3.Angle(Vector3.up, slopehit.normal);
+        return angle < maxSlope && angle != 0;
+    }
+
+    return false;
+   }
+
+   private Vector3 Slopedirection()
+   {
+    return Vector3.ProjectOnPlane(movedirection, slopehit.normal).normalized;
    }
 }

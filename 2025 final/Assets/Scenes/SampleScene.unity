@@ -412,6 +412,7 @@ GameObject:
   - component: {fileID: 473565559}
   - component: {fileID: 473565562}
   - component: {fileID: 473565564}
+  - component: {fileID: 473565568}
   - component: {fileID: 473565567}
   - component: {fileID: 473565566}
   - component: {fileID: 473565565}
@@ -434,12 +435,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1345f99cd3e874f93857d81d8ba22a77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxSlope: 40
   crouchspeed: 3.5
   crouchyscale: 0.5
   startyscale: 1
   jumping: {fileID: 8300000, guid: 26050cd08f8e84e19bf12546cbaf5f19, type: 3}
   groundpound: {fileID: 8300000, guid: 354a78bcbf381421cb11ccdba314f47f, type: 3}
-  crouchkey: 306
+  crouchkey: 113
   Gravity: 1
   groundDrag: 5
   jumpforce: 12
@@ -821,6 +823,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AmmoText: {fileID: 1469184917}
+--- !u!114 &473565568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473565551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef715e59749ed4725bf43d2eab625407, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orentation: {fileID: 54860010}
+  playerobj: {fileID: 473565556}
+  maxtime: 500
+  slideforce: 20
+  slidekay: 101
 --- !u!1 &692127223
 GameObject:
   m_ObjectHideFlags: 0
