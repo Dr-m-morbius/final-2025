@@ -444,7 +444,7 @@ MonoBehaviour:
   crouchkey: 113
   Gravity: 1
   groundDrag: 3
-  jumpforce: 6
+  jumpforce: 12
   state: 0
   jumpcooldown: 0.25
   airmultiplier: 0
