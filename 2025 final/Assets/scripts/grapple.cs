@@ -7,6 +7,7 @@ using UnityEngine;
 public class grapple : MonoBehaviour
 {
     private playermove pm;
+    public ParticleSystem ps;
     public Transform cam;
     public Transform player;
     public Transform grappletip;
@@ -74,6 +75,7 @@ public class grapple : MonoBehaviour
           lr.positionCount = 2;
           source.PlayOneShot(shoot);
           source.PlayOneShot(hitwall);
+          ps.Play();
           //grappleposition = grappletip.position;
             
         }

@@ -27,6 +27,7 @@ public class playermove : MonoBehaviour
     float verticalinput;
      public float Gravity = 1f;
     public float groundDrag;
+    public ParticleSystem jumpps;
     public float jumpforce = 5;
     public Movementstate state;
 
@@ -81,6 +82,7 @@ public bool canjump = true;
         if(grounded)
         {
             rb.drag = groundDrag;
+            
         }
         else 
         {
@@ -134,6 +136,8 @@ public bool canjump = true;
         {
             state = Movementstate.walkking;
             moveSpeed = walkspeed;
+            
+
         }
 
         // put in air state
@@ -196,7 +200,7 @@ public bool canjump = true;
      //reset y velocity for always jumping same height
      rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
-     rb.AddForce(transform.up * jumpforce, ForceMode.Impulse);
+     rb.AddForce(transform.up * jumpforce, ForceMode.Impulse); 
     }
    private void resetjump()
    {

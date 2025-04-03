@@ -11,11 +11,13 @@ public class shooting : MonoBehaviour
      public AudioClip shoot;
      
 public Transform firepoint;
+public ParticleSystem ps;
     // Start is called before the first frame update
     void Start()
     {
         _ammo = GetComponent<ammo>();
          source = GetComponent<AudioSource>();
+        
     }
 
     // Update is called once per frame
@@ -42,6 +44,7 @@ public Transform firepoint;
     source.PlayOneShot(shoot);
     //kill ammo
     _ammo.RemoveAmmo();
+    ps.Play();
 }
     }
 }
