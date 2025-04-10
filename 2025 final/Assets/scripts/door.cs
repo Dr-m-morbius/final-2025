@@ -17,6 +17,10 @@ public class door : MonoBehaviour
     }
       void OnTriggerEnter(Collider other)
     {
-        Destroy(this.gameObject);
+if (other.gameObject.CompareTag("bullet"))
+        {
+           
+            Destroy(this.gameObject);
+        }
     }
 }

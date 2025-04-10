@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement; 
 
 public class bullet : MonoBehaviour
 {
      public  float moveSpeed = 30f;
          public float lifeTime = 5f;
 public ParticleSystem ps;
+  public int LevelSelect;
 private AudioSource source;
 public AudioClip land;
+public ParticleSystem splodeps;
 public AudioClip explo;
       private Rigidbody _rigidbody;
     // Start is called before the first frame update
@@ -45,8 +48,17 @@ public AudioClip explo;
      {
         if (other.gameObject.CompareTag("door"))
         {
-            source.PlayOneShot(explo);
-            Destroy(other.gameObject);
+            //source.PlayOneShot(explo);
+            //Destroy(other.gameObject);
+        }
+         if (other.gameObject.CompareTag("endlvl"))
+         {
+            SceneManager.LoadScene(LevelSelect);
+         }
+          if (other.gameObject.CompareTag("bullet"))
+        {
+             splodeps.Play();
+             //Destroy(this.gameObject);
         }
         
      }

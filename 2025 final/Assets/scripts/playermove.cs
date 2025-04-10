@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement; 
 
 
 
@@ -75,6 +76,10 @@ public bool canjump = true;
     {
         input(); 
         statehandler();
+        if (transform.position.y <= -10)
+        {
+             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
 
         grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 0.2f, whatisground);
 
