@@ -981,7 +981,7 @@ MonoBehaviour:
   groundpound: {fileID: 8300000, guid: 354a78bcbf381421cb11ccdba314f47f, type: 3}
   crouchkey: 113
   Gravity: 1
-  groundDrag: 3
+  groundDrag: 5
   jumpps: {fileID: 0}
   jumpforce: 17
   state: 0
