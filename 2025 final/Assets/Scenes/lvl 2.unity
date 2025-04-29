@@ -1341,7 +1341,7 @@ MonoBehaviour:
   jumpforce: 17
   state: 0
   jumpcooldown: 0.25
-  airmultiplier: 0.05
+  airmultiplier: 0.15
   canjump: 0
   playerheight: 2
   whatisground:

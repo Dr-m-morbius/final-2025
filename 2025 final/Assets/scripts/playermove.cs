@@ -70,13 +70,14 @@ public bool canjump = true;
         rb.freezeRotation = true;
         startyscale = transform.localScale.y;
 
+
     }
 
         void Update()
     {
         input(); 
         statehandler();
-        if (transform.position.y <= -10)
+        if (transform.position.y <= -30)
         {
              SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
