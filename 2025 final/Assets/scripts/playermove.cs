@@ -30,6 +30,7 @@ public class playermove : MonoBehaviour
     public float groundDrag;
     public ParticleSystem jumpps;
     public float jumpforce = 5;
+    public float poundforce = 15;
     public Movementstate state;
 
     public enum Movementstate
@@ -152,7 +153,7 @@ public bool canjump = true;
             state = Movementstate.inair;
             if (Input.GetKeyDown(crouchkey))
             {
-                rb.AddForce(Vector3.down * jumpforce, ForceMode.Impulse);
+                rb.AddForce(Vector3.down * poundforce, ForceMode.Impulse);
                 source.PlayOneShot(groundpound);
             }
         }

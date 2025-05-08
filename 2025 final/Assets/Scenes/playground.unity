@@ -12346,6 +12346,7 @@ MonoBehaviour:
   groundDrag: 3
   jumpps: {fileID: 0}
   jumpforce: 17
+  poundforce: 120
   state: 0
   jumpcooldown: 0.25
   airmultiplier: 0.05
