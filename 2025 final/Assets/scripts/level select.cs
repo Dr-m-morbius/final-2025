@@ -11,6 +11,7 @@ void Start()
 }
     public int LevelOne;
     public int LevelTwo;
+     public int LevelThree;
     public int Playground;
     
 
@@ -23,6 +24,11 @@ void Start()
     {
         SceneManager.LoadScene(LevelTwo);
     }
+    public void lvl3button()
+    {
+        SceneManager.LoadScene(LevelThree);
+    }
+
     public void playgroundbutton()
     {
         SceneManager.LoadScene(Playground);

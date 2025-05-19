@@ -996,7 +996,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   lr: {fileID: 473565562}
-  maxdistance: 50
+  maxdistance: 75
   delay: 25
   shoot: {fileID: 8300000, guid: b89b40ef1e2874df6b8a6f90faaf33ce, type: 3}
   hitwall: {fileID: 8300000, guid: 1691ac041d84a46d1bff16434ce127c8, type: 3}
